@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic-Tac-Toe Game</title>
+    <link rel="stylesheet" href="myStyling.css">
+    <script src="myFunctionality.js"></script>
+    <style>
+        /* Basic styles for simplicity */
+        #board {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-gap: 10px;
+        }
+
+        .square {
+            width: 100px;
+            height: 100px;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2em;
+            cursor: pointer;
+        }
+
+        #messages {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Tic-Tac-Toe Game</h1>
+    <div id="board">
+        <div class="square" data-index="0"></div>
+        <div class="square" data-index="1"></div>
+        <div class="square" data-index="2"></div>
+        <div class="square" data-index="3"></div>
+        <div class="square" data-index="4"></div>
+        <div class="square" data-index="5"></div>
+        <div class="square" data-index="6"></div>
+        <div class="square" data-index="7"></div>
+        <div class="square" data-index="8"></div>
+    </div>
+    <button id="reset-button">Reset Game</button>
+    <p id="messages">It's X's turn!</p>
+
+    <script>
+        const board = ['', '', '', '', '', '', '', '', ''];
+        let turn = 'X';
+        const winningCombos = [
+            [0, 1, 2],
+            [3, 4, 5],
+            [6, 7, 8],
+            [0, 3, 6],
+            [1, 4, 7],
+            [2, 5, 8],
+            [0, 4, 8],
+            [2, 4, 6]
+        ];
+        const squares = document.querySelectorAll('.square');
+        const messages = document.getElementById('messages');
+
+        function getWinner() {
+            let winner = null;
+            winningCombos.forEach(combo => {
+                if (board[combo[0]] && board[combo[0]] === board[combo[1]] && board[combo[0]] === board[combo[2]]) {
+                    winner = board[combo[0]];
+                }
+            });
+            if (winner) {
+                return winner;
+            } else if (board.includes('')) {
+                return null; // No winner yet
+            } else {
+                return 'T'; // Tie
+            }
+        }
+
+        function handleMove(event) {
+            const index = event.target.getAttribute('data-index');
+            if (board[index] === '' && !getWinner()) {
+                board[index] = turn;
+                event.target.innerText = turn;
+                const winner = getWinner();
+                if (winner) {
+                    messages.textContent = winner === 'T' ? `That's a tie, queen!` : `${winner} wins the game!`;
+                } else {
+                    turn = turn === 'X' ? 'O' : 'X';
+                    messages.textContent = `It's ${turn}'s turn!`;
+                }
+            }
+        }
+
+        function init() {
+            board.fill('');
+            squares.forEach(square => square.innerText = '');
+            turn = 'X';
+            messages.textContent = `It's X's turn!`;
+        }
+
+        squares.forEach(square => square.addEventListener('click', handleMove));
+        document.getElementById('reset-button').addEventListener('click', init);
+
+        init(); // Initialize the game
+    </script>
+</body>
+
+</html>
